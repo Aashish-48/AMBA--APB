@@ -1,0 +1,34 @@
+
+`timescale 1ns/1ps
+
+
+module APB_top(input PCLK,PRESET,transfer,READ_WRITE,
+			input [31:0]apb_write_paddr,
+			input [7:0]apb_write_data,
+			input [31:0] apb_read_paddr,
+			output PSLVERR, 
+         output [7:0] apb_read_data_out );
+
+       wire [7:0]PWDATA,PRDATA;
+       wire [31:0]PADDR;
+
+       wire PREADY,PREADY1,PENABLE,PSEL,PWRITE;
+
+       master dut_mas(
+	        .apb_write_paddr(apb_write_paddr),
+		     .apb_read_paddr(apb_read_paddr),
+		     .apb_write_data(apb_write_data),
+		     .PRDATA(PRDATA),         
+	        .PRESET(PRESET),
+		     .PCLK(PCLK),.READ_WRITE(READ_WRITE),.transfer(transfer),.PREADY(PREADY),.PSEL(PSEL),
+			  .PENABLE(PENABLE),.PADDR(PADDR),
+	        .PWRITE(PWRITE),.PWDATA(PWDATA),
+		     .apb_read_data_out(apb_read_data_out),
+		     .PSLVERR(PSLVERR )); 
+
+
+      slave dut_slave(PCLK,PRESET, PSEL,PENABLE,PWRITE, PADDR[31:0],PWDATA, PRDATA, PREADY );
+      
+
+
+endmodule
